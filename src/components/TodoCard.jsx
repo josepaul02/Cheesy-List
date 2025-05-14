@@ -3,6 +3,7 @@ import React from 'react'
 export default function TodoCard(props) {
   const {children, HandleDeleteTodo, index, HandleEditTodo} = props
   return (
+    
     <li className='TodoItem'>
       {children}
       <div className='actionsContainer'>
