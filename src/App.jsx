@@ -8,18 +8,21 @@ function App() {
 const [todos, setTodos] = useState([])
 const [todoValue, setTodoValue] = useState('')
 
-  function persistData()
+
+  function persistData(newList)
   {
     localStorage.setItem('todos',JSON.stringify({todos:
       newList
     }))
   }
 
-  function HandleAddTodos(newTodo){
-    const newTodoList = [...todos, newTodo]
-    persistData(newTodoList)
-    setTodos(newTodoList)
-  }
+  function HandleAddTodos(newTodo) {
+  if (!newTodo.trim()) return
+  const newTodoList = [...todos, newTodo]
+  persistData(newTodoList)
+  setTodos(newTodoList)
+}
+
 
   function HandleDeleteTodo(index){
     const newTodoList = todos.filter((todo, todoIndex) => {
@@ -35,26 +38,26 @@ const [todoValue, setTodoValue] = useState('')
   }
 
   useEffect(() => {
-    if(!localStorage){
-      return
+  const storedTodos = localStorage.getItem('todos')
+  if (storedTodos) {
+    try {
+      const parsed = JSON.parse(storedTodos)
+      if (parsed.todos) {
+        setTodos(parsed.todos)
+      }
+    } catch (e) {
+      console.error("Failed to parse todos from localStorage:", e)
     }
-
-    let localTodos = localStorage.getItem('todos')
-    if(!localStorage){
-      return
-    }
-
-    localTodos = JSON.parse(localTodos).todos
-    setTodos(localTodos)
-
-  },[])
-
+  }
+}, [])
 
   return (
    <>
-      <TodoInput todoValue = {todoValue} setTodoValue = {setTodoValue} HandleAddTodos = {HandleAddTodos} />
-      <TodoList HandleDeleteTodo = {HandleDeleteTodo} HandleEditTodo = {HandleEditTodo}
-      todos = {todos}   />
+      
+          <TodoInput todoValue = {todoValue} setTodoValue = {setTodoValue} HandleAddTodos = {HandleAddTodos} />
+          <TodoList HandleDeleteTodo = {HandleDeleteTodo} HandleEditTodo = {HandleEditTodo}
+            todos = {todos}   />
+     
    </>
   )
 }
